@@ -3,7 +3,9 @@ from .models import *
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 
+
 User = get_user_model()
+
 
 class UserSerializer(serializers.ModelSerializer):
     age = serializers.IntegerField( read_only=True)
@@ -11,19 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["username", "email", "age"]
 
+
+
 class FollowingSerializer(serializers.Serializer):
     class Meta:
         model = Following_thru
         fields = ["from_profile", "to_profile"]
 
 
-# class ProfileSerializer(serializers.ModelSerializer):
-#     user = UserSerializer(read_only=True)
-#     following = FollowingSerializer(many=True, source = "following_relations", read_only=True)
-#     followers_count = serializers.IntegerField(read_only=True)
-#     class Meta:
-#         model = Profile
-#         fields = ["user", "caption", "following", "followers_count"]
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
@@ -35,14 +32,16 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         fields = ["url", "id", "user", "caption", "following", "followers_count", "profile_pic"]
 
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     confirm_password = serializers.CharField(write_only=True, min_length=8)
     birth_date = serializers.DateField(required=True)
+    profile_pic = serializers.ImageField(write_only=True, required=False)
 
     class Meta:
         model = User
-        fields = ["username", "email", "birth_date", "password", "confirm_password"]
+        fields = ["username", "email", "birth_date", "profile_pic", "password", "confirm_password"]
 
     def validate_birth_date(self, value):
         age = User.calculate_age(value)
@@ -59,6 +58,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         
 
     def create(self, validated_data):
+        profile_pic = validated_data.pop("profile_pic", None)
         validated_data.pop("confirm_password")
         user = User(
             username = validated_data["username"],
@@ -67,6 +67,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data["password"])
         user.save()
+        profile= user.profile
+        if profile_pic:
+            profile.profile_pic=profile_pic
+            profile.save()
         return user
     
 
@@ -74,7 +78,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", required = False)
     email = serializers.EmailField(source="user.email", required = False)
-    birth_date = serializers.IntegerField(source="user.birth_date", required = False)
+    birth_date = serializers.DateField(source="user.birth_date", required = False)
     new_password = serializers.CharField(write_only=True, required=False, min_length=8)
     password = serializers.CharField(write_only = True, required = True)
 
