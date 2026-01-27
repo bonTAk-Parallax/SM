@@ -17,4 +17,5 @@ router.register(r"profiles", views.ProfileViewSet, basename="profile")
 urlpatterns = [
     path("", include(router.urls)),
     path("register/", UserRegistrationView.as_view(), name = "user-register"),
+    path("profiles/edit", ProfileUpdateView.as_view(), name = "profile-udpate"),
 ]

@@ -2,13 +2,28 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Prefetch
 from django.core.exceptions import ValidationError
+from django.utils import timezone
+from datetime import date
 
 # Create your models here.
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    age = models.PositiveIntegerField()
-    REQUIRED_FIELDS = ["email", "age"]
+    birth_date = models.DateField(default=date(date.today().year - 18, date.today().month, date.today().day))
+    # age = models.PositiveIntegerField()
+    REQUIRED_FIELDS = ["email", "birth_date"]
+
+    @staticmethod
+    def calculate_age(birth_date):
+        today = date.today()
+        age = today.year - birth_date.year
+        if (today.month, today.day) < (birth_date.month, birth_date.day):
+            age -= 1
+        return age
+    
+    @property
+    def age(self):
+        return self.calculate_age(self.birth_date)
 
     def __str__(self):
         return self.username 
