@@ -23,6 +23,7 @@ from drf_spectacular.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 
 urlpatterns = [
@@ -39,7 +40,7 @@ urlpatterns = [
     # ReDoc: http://127.0.0.1:8000/api/redoc/
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
-]
+] + debug_toolbar_urls()
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

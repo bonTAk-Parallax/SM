@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'app_users.apps.AppUsersConfig',
     'drf_spectacular',
+    "debug_toolbar",
 ]
 
 
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -95,6 +97,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'social_media.wsgi.application'
+
+INTERNAL_IPS = [
+
+    "127.0.0.1",
+
+]
 
 
 # Database

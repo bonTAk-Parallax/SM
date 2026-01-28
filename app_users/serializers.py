@@ -15,10 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-class FollowingSerializer(serializers.Serializer):
+class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Following_thru
-        fields = ["from_profile", "to_profile"]
+        fields = ["to_profile"]
 
 
 
@@ -26,10 +26,11 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
     following = FollowingSerializer(many=True, source = "following_relations", read_only=True)
     followers_count = serializers.IntegerField(read_only=True)
+    following_count = serializers.IntegerField(read_only=True)
     profile_pic = serializers.ImageField(required=False)
     class Meta:
         model = Profile
-        fields = ["url", "id", "user", "caption", "following", "followers_count", "profile_pic"]
+        fields = ["url", "id", "user", "caption", "following", "following_count", "followers_count", "profile_pic"]
 
 
 
@@ -109,3 +110,5 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
         return instance
+    
+

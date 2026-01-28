@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.decorators import action
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -13,6 +15,63 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
+    @action(detail=True, methods=['post'], permission_classes = [IsAuthenticated])
+    def follow(self, request, pk=None):
+        target_profile = self.get_object()
+        from_profile = request.user.profile
+
+        if from_profile == target_profile:
+            return Response(
+                {"detail": "You cannot follow yourself!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        follow, created = Following_thru.objects.get_or_create(
+            from_profile=from_profile,
+            to_profile = target_profile
+        )
+        if not created:
+            return Response(
+                {"detail":"Already following"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response({
+            "detail": f"You are now following {target_profile.user.username}"
+        }, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['posts'], permission_classes = [IsAuthenticated])
+    def unfollow(self, request, pk=None):
+        target_profile = self.get_object()
+        from_profile = requeset.user.profile
+
+        deleted, = Following_thru.objects.filter(
+            from_profile = from_profile,
+            to_profile = target_profile
+        ).delete()
+
+        if deleted == 0:
+            return Reponse(
+                {"detail": f"You aren't following {target_profile}"},
+                status = status.HTTP_400_BAD_REQUEST
+            )
+        return Response(
+            {"detail": f"You unfollowed {target_profile}"},
+            status=status.HTTP_200_OK
+        )
+    
+    @action(detail=True, methods=['get'])
+    def followers(self, request, pk=None):
+        profile = self.get_object()
+        followers = Profile.objects.filter(following_relations__to_profile = profile)
+        serializer = ProfileSerializer(followers, many=True, context={"request": request})
+        return Response(serializer.data)
+    
+
+    @action(detail=True, methods=['get'])
+    def following(self, request, pk=None):
+        profile = self.get_object()
+        following = Profile.objects.filter(following_relations__from_profile = profile)
+        serializer = ProfileSerializer(following, many=True, context={"request": request})
+        return Response(serializer.data)
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
@@ -57,4 +116,14 @@ class ProfileUpdateView(generics.UpdateAPIView):
             }, 
             status = status.HTTP_200_OK
         )
+    
 
+class DeleteProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        password = request.data.get("password")
+
+        request.user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    

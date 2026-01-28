@@ -51,6 +51,10 @@ class Profile(models.Model):
     @property
     def followers_count(self):
         return self.followers.count()
+    
+    @property
+    def following_count(self):
+        return self.following.count()
 
 
     def __str__(self):
@@ -65,6 +69,14 @@ class Profile(models.Model):
 class Following_thru(models.Model):
     from_profile = models.ForeignKey(Profile, related_name="following_relations", on_delete=models.CASCADE)
     to_profile = models.ForeignKey(Profile, related_name="follower_relations", on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["from_profile", "to_profile"],
+                name = "unique_follow"
+            )
+        ]
 
 
     def clean(self):

@@ -18,4 +18,5 @@ urlpatterns = [
     path("", include(router.urls)),
     path("register/", UserRegistrationView.as_view(), name = "user-register"),
     path("profiles/edit", ProfileUpdateView.as_view(), name = "profile-udpate"),
+    path('profile/delete/', DeleteProfileView.as_view(), name="profile-delete")
 ]
