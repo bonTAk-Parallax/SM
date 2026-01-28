@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'app_users.apps.AppUsersConfig',
+    'post.apps.PostConfig',
     'drf_spectacular',
     "debug_toolbar",
 ]

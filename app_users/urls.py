@@ -15,8 +15,8 @@ router = DefaultRouter()
 router.register(r"profiles", views.ProfileViewSet, basename="profile")
 
 urlpatterns = [
-    path("", include(router.urls)),
-    path("register/", UserRegistrationView.as_view(), name = "user-register"),
-    path("profiles/edit", ProfileUpdateView.as_view(), name = "profile-udpate"),
-    path('profile/delete/', DeleteProfileView.as_view(), name="profile-delete")
+    path("api/", include(router.urls)),
+    path("api/register/", UserRegistrationView.as_view(), name = "user-register"),
+    path("api/profiles/edit", ProfileUpdateView.as_view(), name = "profile-udpate"),
+    path('api/profile/delete/', DeleteProfileView.as_view(), name="profile-delete")
 ]

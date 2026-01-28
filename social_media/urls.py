@@ -29,7 +29,8 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app_users.urls')),
-    path("", include("rest_framework.urls")),
+    path("api-auth/", include("rest_framework.urls")),
+    path("api/", include("post.urls")),
 
         # Raw OpenAPI schema: http://127.0.0.1:8000/api/schema/
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

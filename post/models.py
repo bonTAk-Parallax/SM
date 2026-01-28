@@ -15,7 +15,8 @@ class Post(models.Model):
 
     @property
     def post_like_method(self):
-        return len([count for count in self.like])
+        # return len([count for count in self.like])
+        return self.like.count()
     
     # def clean(self):
     #     if not self.text_content and not self.image_content:    
@@ -49,7 +50,8 @@ class Comment(models.Model):
 
     @property
     def comment_like_method(self):
-        return len([count for count in self.comment_like])
+        # return len([count for count in self.comment_like])
+        return self.comment_like.count()
 
 
 class CommentLike(models.Model):
@@ -73,8 +75,10 @@ class Reply(models.Model):
     reply_like = models.ManyToManyField(Profile, through="ReplyLike", related_name="liked_reply", blank=True)
     replied_date = models.DateTimeField(auto_now_add=True)
 
+    @property
     def reply_like_method(self):
-        return len([count for count in self.reply_like])
+        # return len([count for count in self.reply_like])
+        return self.reply_like.count()
 
 
 class ReplyLike(models.Model):
@@ -85,7 +89,7 @@ class ReplyLike(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "reply"],
+                fields=["reply_liked_by", "reply"],
                 name = "unique_user_reply_like"
             )
         ]
