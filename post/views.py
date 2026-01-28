@@ -39,10 +39,21 @@ class ReplyViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         comment_pk = self.kwargs.get('comment_pk')
+        parent_reply_pk = self.kwargs.get('parent_reply_pk')
+        queryset = Reply.objects.all()
+        if parent_reply_pk:
+            print("this is triggering RN")
+            return queryset.filter(parent_reply_id = parent_reply_pk).order_by('-replied_date')
         if comment_pk:
-            return Reply.objects.filter(comment_id=comment_pk).order_by('-replied_date')
-        return Reply.objects.all().order_by('-replied_date')
+            print("comment being triggered rn")
+            return queryset.filter(comment_id=comment_pk).order_by('-replied_date')
 
     def perform_create(self, serializer):
-        comment = Comment.objects.get(pk=self.kwargs.get('comment_pk'))
-        serializer.save(replied_by=self.request.user.profile, comment=comment)
+        comment_pk = self.kwargs.get('comment_pk')
+        parent_reply_pk = self.kwargs.get('reply_pk')
+        if parent_reply_pk:
+            parent_reply = Reply.objects.get(pk= parent_reply_pk)
+            serializer.save(replied_by=self.request.user.profile, parent_reply=parent_reply, comment=parent_reply.comment)
+        elif comment_pk:
+            comment = Comment.objects.get(pk=comment_pk)
+            serializer.save(replied_by=self.request.user.profile, comment=comment)

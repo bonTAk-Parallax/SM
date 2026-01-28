@@ -70,7 +70,8 @@ class CommentLike(models.Model):
 
 class Reply(models.Model):
     replied_by = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="replied")
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies', null=True, blank=True)
+    parent_reply = models.ForeignKey("self", on_delete=models.CASCADE, related_name="child_replies", null=True, blank=True)
     reply_content = models.TextField(validators = [MaxLengthValidator(50)], blank=False)
     reply_like = models.ManyToManyField(Profile, through="ReplyLike", related_name="liked_reply", blank=True)
     replied_date = models.DateTimeField(auto_now_add=True)

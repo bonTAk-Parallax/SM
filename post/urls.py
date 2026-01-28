@@ -13,8 +13,12 @@ posts_router.register(r"comments", views.CommentViewSet, basename = "post-commen
 comment_router = routers.NestedDefaultRouter(posts_router, r'comments', lookup = 'comment')
 comment_router.register(f'replies', views.ReplyViewSet, basename = "comment-replies")
 
+reply_router = routers.NestedDefaultRouter(comment_router, r'replies', lookup="parent_reply")
+reply_router.register(f'replies', views.ReplyViewSet, basename="reply-replies")
+
 urlpatterns = [
     path("", include(router.urls)),
     path("", include(posts_router.urls)),
-    path("", include(comment_router.urls))
+    path("", include(comment_router.urls)),
+    path("", include(reply_router.urls))
 ]
