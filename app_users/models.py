@@ -40,6 +40,7 @@ class Profile(models.Model):
         through="Following_thru",
         related_name="followers"
     )
+    created_date = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     # Add numbers of posts of a user after creating a Posts model
     # user isn't able to follow themselves - can manage through UI
 

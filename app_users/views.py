@@ -7,12 +7,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.decorators import action
-from rest_framework.views import APIView
+from rest_framework.generics import DestroyAPIView
 
 # Create your views here.
 
 class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.all().order_by('-created_date')
     serializer_class = ProfileSerializer
 
     @action(detail=True, methods=['post'], permission_classes = [IsAuthenticated])
@@ -118,12 +118,23 @@ class ProfileUpdateView(generics.UpdateAPIView):
         )
     
 
-class DeleteProfileView(APIView):
+class DeleteProfileView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = ConfirmPasswordSerializer
 
-    def delete(self, request):
-        password = request.data.get("password")
+    def get_object(self):
+        return self.request.user
 
-        request.user.delete()
+
+    def post(self, request):
+        
+        serializer = self.get_serializer(
+            data = request.data,
+            context = {"request": request},
+        )
+        serializer.is_valid(raise_exception=True)
+        user = self.get_object()
+        #user.is_active = False for temprorary deactivation
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     

@@ -8,12 +8,17 @@ from .permissions import IsOwnerOrReadOnly
 # Create your views here.
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-posted_date')
+    queryset = Post.objects.all().order_by('-made_at')
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(posted_by=self.request.user.profile)
+        serializer.save(made_by=self.request.user.profile, modified_by = self.request.user.profile)
+    
+    def perform_update(self, serializer):
+        post = serializer.instance
+        post.capture_history()
+        serializer.save(modified_by = self.request.user.profile)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -39,7 +44,7 @@ class ReplyViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         comment_pk = self.kwargs.get('comment_pk')
-        parent_reply_pk = self.kwargs.get('parent_reply_pk')
+        parent_reply_pk = self.kwargs.get('parent_`reply_pk')
         queryset = Reply.objects.all()
         if parent_reply_pk:
             print("this is triggering RN")

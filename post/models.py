@@ -3,28 +3,38 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 from app_users.models import *
+from abc import ABC, abstractmethod
 
 User = get_user_model()
 
-class Post(models.Model):
-    posted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posted')
+class BaseModel(models.Model):
+    made_by = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="%(class)s_made_by", null=True, blank=True)
+    made_at = models.DateTimeField(auto_now_add = True)
+    modified_by = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="%(class)s_modified_by", null=True, blank=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    modification_history = models.JSONField(default=list, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def capture_history(self):
+        history = self.modification_history or []
+        history.append({
+            "modified_by": self.modified_by.user.username if self.modified_by else None,
+            "modified_at": self.modified_at.isoformat(),
+        })
+        self.modification_history = history
+
+class Post(BaseModel):
     text_content = models.TextField(validators = [MaxLengthValidator(300)], blank=True)
     image_content = models.ImageField(upload_to="post_pics/", blank=True)
     like = models.ManyToManyField(Profile, through="PostLike", related_name="liked_post", blank=True)
-    posted_date = models.DateTimeField(auto_now_add=True)
+    # posted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posted')
+    # posted_date = models.DateTimeField(auto_now_add=True)
 
     @property
     def post_like_method(self):
-        # return len([count for count in self.like])
         return self.like.count()
-    
-    # def clean(self):
-    #     if not self.text_content and not self.image_content:    
-    #         raise ValidationError("You must have some texts or an image for it to be posted!")
-
-    # def save(self, *args, **kwargs):
-    #     self.clean()
-    #     return super().save(*args, **kwargs)
 
 
 class PostLike(models.Model):

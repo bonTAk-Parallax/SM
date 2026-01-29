@@ -20,13 +20,20 @@ class ProfilePostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source="posted_by.user.username", read_only=True)
-    profile_pic = serializers.ImageField(source="posted_by.profile_pic", read_only=True)
+    made_by = serializers.CharField(source="made_by.user.username", read_only=True)
+    profile_pic = serializers.ImageField(source="made_by.profile_pic", read_only=True)
     post_like_method = serializers.IntegerField(read_only=True)
+    # modified_by = serializers.CharField(source = "modified_by", many=True, read_only=True)
+    modification_history = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'username', 'profile_pic', 'text_content', 'image_content', 'post_like_method', 'posted_date']
+        # fields = ['id', 'username', 'profile_pic', 'text_content', 'image_content', 'post_like_method', 'posted_date']
+        fields = ['id', 'made_by', 'profile_pic', 'text_content', 'image_content', 'post_like_method', 'made_at','modification_history']
+        read_only = ('modified_by', "made_by")
+
+    def get_modification_history(self, obj):
+        return obj.get_modification_history()
 
     def validate(self, data):
         if not data.get("text_content", "").strip() and not data.get("image_content", None):

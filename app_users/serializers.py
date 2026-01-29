@@ -13,6 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["username", "email", "age"]
 
+    
+
 
 
 class FollowingSerializer(serializers.ModelSerializer):
@@ -30,7 +32,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     profile_pic = serializers.ImageField(required=False)
     class Meta:
         model = Profile
-        fields = ["url", "id", "user", "caption", "following", "following_count", "followers_count", "profile_pic"]
+        fields = ["url", "id", "user", "caption", "following", "following_count", "followers_count", "profile_pic", "created_date"]
 
 
 
@@ -112,3 +114,14 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         return instance
     
 
+class ConfirmPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(write_only=True)
+    
+    def validate(self, attrs):
+        request = self.context["request"]
+        user = request.user
+        password = attrs.get("password")
+        if user.check_password(password):
+            return attrs
+        raise serializers.ValidationError({"error": "Wrong password, cannot delete"})
+    
