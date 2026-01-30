@@ -20,16 +20,14 @@ class ProfilePostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    made_by = serializers.CharField(source="made_by.user.username", read_only=True)
+    username = serializers.CharField(source="made_by.user.username", read_only=True)
     profile_pic = serializers.ImageField(source="made_by.profile_pic", read_only=True)
     post_like_method = serializers.IntegerField(read_only=True)
-    # modified_by = serializers.CharField(source = "modified_by", many=True, read_only=True)
     modification_history = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Post
-        # fields = ['id', 'username', 'profile_pic', 'text_content', 'image_content', 'post_like_method', 'posted_date']
-        fields = ['id', 'made_by', 'profile_pic', 'text_content', 'image_content', 'post_like_method', 'made_at','modification_history']
+        fields = ['id', 'username', 'profile_pic', 'text_content', 'image_content', 'post_like_method', 'made_at','modification_history']
         read_only = ('modified_by', "made_by")
 
     def get_modification_history(self, obj):
@@ -42,14 +40,15 @@ class PostSerializer(serializers.ModelSerializer):
     
 
 class CommentSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source="commented_by.user.username", read_only=True)
-    profile_pic = serializers.ImageField(source="commented_by.profile_pic", read_only=True)
+    username = serializers.CharField(source="made_by.user.username", read_only=True)
+    profile_pic = serializers.ImageField(source="made_by.profile_pic", read_only=True)
     post = serializers.IntegerField(source="post.id", read_only=True)
     comment_like_method = serializers.IntegerField(read_only=True)
+    modification_history = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['post', 'id', 'username', 'profile_pic', 'comment_content', 'comment_like_method', 'commented_date']
+        fields = ['post', 'id', 'username', 'profile_pic', 'comment_content', 'comment_like_method', 'made_at', 'modification_history' ]
 
     def validate(self, data):
         if not data.get("comment_content", "").strip():
@@ -59,15 +58,16 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ReplySerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source="replied_by.user.username", read_only=True)
-    profile_pic = serializers.ImageField(source="replied_by.profile_pic", read_only=True)
+    username = serializers.CharField(source="made_by.user.username", read_only=True)
+    profile_pic = serializers.ImageField(source="made_by.profile_pic", read_only=True)
     comment = serializers.IntegerField(source='comment.id', read_only=True)
     reply_like_method = serializers.IntegerField(read_only=True)
     parent_reply = serializers.IntegerField(source="parent_reply.id", read_only=True)
+    modification_history = serializers.JSONField(read_only=True)
 
     class Meta:
         model = Reply
-        fields = ['comment', 'parent_reply', 'id', 'username', 'profile_pic', 'reply_content', 'reply_like_method', 'replied_date']
+        fields = ['comment', 'parent_reply', 'id', 'username', 'profile_pic', 'reply_content', 'reply_like_method', 'made_at', 'modification_history']
 
     def validate(self, data):
         if not data.get("reply_content", "").strip():
