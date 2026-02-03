@@ -15,14 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["username", "email", "age", "profile_pic"]
 
     
-
-
-
 class FollowingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Following_thru
         fields = ["to_profile"]
-
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):

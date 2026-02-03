@@ -9,7 +9,6 @@ from django_currentuser.db.models import CurrentUserField
 User = get_user_model()
 
 class BaseModel(models.Model):
-    # created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="%(class)s_created_by", null=True, blank=True)
     created_by = CurrentUserField(related_name="%(class)s_created_by", null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add = True)
     modified_by = CurrentUserField(related_name="%(class)s_modified_by", null=True, blank=True)
@@ -18,6 +17,7 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+        ordering  = ['-created_at']
 
     def save(self, *args, **kwargs):
         if self.pk:
