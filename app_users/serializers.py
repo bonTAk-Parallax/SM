@@ -8,10 +8,11 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_pic = serializers.ImageField(required=False)
     age = serializers.IntegerField( read_only=True)
     class Meta:
         model = User
-        fields = ["username", "email", "age"]
+        fields = ["username", "email", "age", "profile_pic"]
 
     
 
@@ -29,10 +30,9 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     following = FollowingSerializer(many=True, source = "following_relations", read_only=True)
     followers_count = serializers.IntegerField(read_only=True)
     following_count = serializers.IntegerField(read_only=True)
-    profile_pic = serializers.ImageField(required=False)
     class Meta:
         model = Profile
-        fields = ["url", "id", "user", "caption", "following", "following_count", "followers_count", "profile_pic", "created_date"]
+        fields = ["url", "id", "user", "caption", "following", "following_count", "followers_count", "created_date"]
 
 
 

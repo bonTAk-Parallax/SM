@@ -10,6 +10,7 @@ from datetime import date
 class User(AbstractUser):
     email = models.EmailField(unique=True)
     birth_date = models.DateField(default=date(date.today().year - 18, date.today().month, date.today().day))
+    profile_pic = models.ImageField(upload_to="profile_pics/", default="profile_pics/default-profile-pic.webp", blank=True, null=True)
     # age = models.PositiveIntegerField()
     REQUIRED_FIELDS = ["email", "birth_date"]
 
@@ -31,7 +32,6 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(upload_to="profile_pics/", default="profile_pics/default-profile-pic.webp", blank=True)
     caption = models.CharField(max_length=200, blank=True)
     # following = models.ManyToManyField(User, through="Following_thru")
     following = models.ManyToManyField(

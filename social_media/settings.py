@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    # 'corsheaders',
     'django_extensions',
     'app_users.apps.AppUsersConfig',
     'post.apps.PostConfig',
     'drf_spectacular',
     "debug_toolbar",
+    'author',
 ]
 
 
@@ -52,6 +54,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
             'rest_framework.authentication.SessionAuthentication',
+            # "rest_framework_simplejwt.authentication.JWTAuthentication",
         ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -71,14 +74,25 @@ AUTH_USER_MODEL = "app_users.User"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'author.middlewares.AuthorDefaultBackendMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+
+AUTHOR_DEFAULT_AUTHOR_FIELD = None  
+AUTHOR_CREATED_BY_FIELD = 'created_by'  
+AUTHOR_MODIFIED_BY_FIELD = 'modified_by' 
+
+
+# CORS_ALLOW_ALL_ORIGIN = True
 
 ROOT_URLCONF = 'social_media.urls'
 
