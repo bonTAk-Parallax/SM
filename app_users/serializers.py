@@ -80,10 +80,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class ProfileUpdateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username", required = False)
+    profile_pic = serializers.ImageField(source="user.profile_pic", required = False)
     email = serializers.EmailField(source="user.email", required = False)
     birth_date = serializers.DateField(source="user.birth_date", required = False)
     new_password = serializers.CharField(write_only=True, required=False, min_length=8)
     password = serializers.CharField(write_only = True, required = True)
+
 
     class Meta:
         model = Profile

@@ -59,7 +59,7 @@ class ReplyViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         comment_pk = self.kwargs.get('comment_pk')
-        parent_reply_pk = self.kwargs.get('reply_pk')
+        parent_reply_pk = self.kwargs.get('parent_reply_pk')
         if parent_reply_pk:
             parent_reply = Reply.objects.get(pk= parent_reply_pk)
             serializer.save(parent_reply=parent_reply, comment=parent_reply.comment)

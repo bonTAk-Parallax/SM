@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'post.apps.PostConfig',
     'drf_spectacular',
     "debug_toolbar",
-    'author',
+    'django_currentuser',
 ]
 
 
@@ -80,16 +80,17 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'author.middlewares.AuthorDefaultBackendMiddleware',
+    # 'author.middlewares.AuthorDefaultBackendMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_currentuser.middleware.ThreadLocalUserMiddleware',
 ]
 
 
 
-AUTHOR_DEFAULT_AUTHOR_FIELD = None  
-AUTHOR_CREATED_BY_FIELD = 'created_by'  
-AUTHOR_MODIFIED_BY_FIELD = 'modified_by' 
+# AUTHOR_DEFAULT_AUTHOR_FIELD = None  
+# AUTHOR_CREATED_BY_FIELD = 'created_by'  
+# AUTHOR_MODIFIED_BY_FIELD = 'modified_by' 
 
 
 # CORS_ALLOW_ALL_ORIGIN = True
