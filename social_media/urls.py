@@ -31,6 +31,7 @@ urlpatterns = [
     path('', include('app_users.urls')),
     path("api-auth/", include("rest_framework.urls")),
     path("api/", include("post.urls")),
+    path('api/', include('notification.urls')),
 
         # Raw OpenAPI schema: http://127.0.0.1:8000/api/schema/
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

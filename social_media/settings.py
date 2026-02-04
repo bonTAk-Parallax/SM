@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'app_users.apps.AppUsersConfig',
     'post.apps.PostConfig',
+    'notification',
     'drf_spectacular',
     "debug_toolbar",
     'django_currentuser',

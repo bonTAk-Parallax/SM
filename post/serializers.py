@@ -6,7 +6,7 @@ from app_users.views import *
 
 User = get_user_model()
 
-# Real Time notification system; mentions, JS problem solving (2-3) and functions familiarity through DOM, vue theory
+# JS problem solving (2-3) and functions familiarity through DOM, vue theory
 # palindrome, armstrong, sort/order, binary search, factorial, fibonacci(recursive too), number guess game
 
 
@@ -21,20 +21,13 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-# notification-system-42053
-# https://console.firebase.google.com/u/0/project/notification-system-42053/overview
 class UserOfPost(UserSerializer, DynamicFieldsModelSerializer):
     pass
 
 class PostSerializer(serializers.ModelSerializer):
     created_by = UserOfPost(fields=['username', 'profile_pic'], read_only=True)
     total_likes = serializers.SerializerMethodField(read_only=True)
-    # text_content = serializers.RegexField(
-    #      regex=r'^[a-zA-Z].{8,}$',
-    #      error_messages = {
-    #          'invalid': 'Text Content can only contain text',
-    #          'required': 'Text Content is required'
-    #      })        
+
     class Meta:
         model = Post
         fields = ['id', 'created_by', 'text_content', 'image_content', 'total_likes', 'created_at','modification_history']
