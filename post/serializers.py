@@ -9,6 +9,8 @@ User = get_user_model()
 # Real Time notification system; mentions, JS problem solving (2-3) and functions familiarity through DOM, vue theory
 # palindrome, armstrong, sort/order, binary search, factorial, fibonacci(recursive too), number guess game
 
+
+# https://www.django-rest-framework.org/api-guide/serializers/#dynamically-modifying-fields
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
@@ -19,6 +21,8 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
+# notification-system-42053
+# https://console.firebase.google.com/u/0/project/notification-system-42053/overview
 class UserOfPost(UserSerializer, DynamicFieldsModelSerializer):
     pass
 
