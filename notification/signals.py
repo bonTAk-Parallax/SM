@@ -6,6 +6,7 @@ from app_users.models import *
 from post.models import *
 from django_currentuser.db.models import CurrentUserField
 from crum import get_current_user
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -16,8 +17,9 @@ def post_like_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = post.created_by,
             triggerer = instance.created_by,
-            notif_type = "post_like",
-            post = instance.post,
+            notif_type = f"{instance.created_by} liked your post",
+            content_type = ContentType.objects.get_for_model(Post),
+            object_id = post.id
         )
 
 
@@ -28,9 +30,9 @@ def post_comment_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = post.created_by,
             triggerer = instance.created_by,
-            notif_type = "post_comment",
-            post = instance.post,               
-            comment = instance
+            notif_type = f"{instance.created_by} commented on your post",
+            content_type = ContentType.objects.get_for_model(Post),
+            object_id = post.id
         )
 
 @receiver(post_save, sender=CommentLike)
@@ -40,9 +42,9 @@ def comment_like_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = comment.created_by,
             triggerer = instance.created_by,
-            notif_type = "comment_like",
-            post = comment.post,   
-            comment = comment   
+            notif_type = f"{instance.created_by} liked your comment",
+                    content_type = ContentType.objects.get_for_model(Comment),
+            object_id = comment.id  
         )
 
 @receiver(post_save, sender=Reply)
@@ -52,8 +54,9 @@ def comment_reply_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = comment.created_by,
             triggerer = instance.created_by,
-            notif_type = "comment_reply",
-            comment = comment,
+            notif_type = f"{instance.created_by} replied to your comment",
+            content_type = ContentType.objects.get_for_model(Comment),
+            object_id = comment.id
         )
 
 @receiver(post_save, sender=Reply)
@@ -63,8 +66,9 @@ def reply_to_reply_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = parent_reply.created_by,
             triggerer = instance.created_by,
-            notif_type = "reply_reply",
-            reply = parent_reply,
+            notif_type = f"{instance.created_by} replies to your reply",
+            content_type = ContentType.objects.get_for_model(Reply),
+            object_id = parent_reply.id
         )
     
 @receiver(post_save, sender=ReplyLike)
@@ -74,8 +78,9 @@ def reply_like_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = reply.created_by,
             triggerer = instance.created_by,
-            notif_type = "reply_like",
-            reply = reply,
+            notif_type = f"{instance.created_by} liked your reply",
+            content_type = ContentType.objects.get_for_model(Reply),
+            object_id = reply.id
         )
 
 @receiver(post_save, sender=Following_thru)
@@ -84,7 +89,9 @@ def follower_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = instance.to_profile.user,
             triggerer = instance.from_profile.user,
-            notif_type = "follow"
+            notif_type = f"{instance.created_by} followed you",
+            content_type = ContentType.objects.get_for_model(Profile),
+            object_id = instance.to_profile.id
         )
 
 # user only gets notifications where they are the receiver and only they can edit it's is_read field

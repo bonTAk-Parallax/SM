@@ -5,11 +5,14 @@ from post.serializers import *
 from rest_framework import serializers
 
 
-class NotificationSerializer(serializers.ModelSerializer):
+class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     receiver = UserOfPost(fields=['username', 'profile_pic'], read_only=True)
     triggerer = UserOfPost(fields=['username', 'profile_pic'], read_only=True)
     
     class Meta:
         model = Notification
-        fields = ['id','receiver', 'notif_type', 'post', 'comment', 'reply', 'created_at', 'is_read', 'triggerer']
-        read_only_fields = ['receiver', 'notif_type', 'post', 'comment', 'reply', 'created_at', 'triggerer']
+        fields = ['url','receiver', 'notif_type', 'created_at', 'is_read', 'triggerer']
+        read_only_fields = ['receiver', 'notif_type', 'created_at', 'triggerer']
+        # extra_kwargs = {
+        #     'url': {'lookup_field': 'post_pk', 'view_name': 'post-detail'},
+        # }

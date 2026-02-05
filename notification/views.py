@@ -14,6 +14,7 @@ class NotificationView(generics.ListCreateAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
 
+
     def get_queryset(self):
         read = self.request.query_params.get('read')
         if read:
@@ -30,4 +31,5 @@ class NotificationView(generics.ListCreateAPIView):
 class NotificationDetailView(generics.RetrieveUpdateAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
+    lookup_field = 'pk'
 

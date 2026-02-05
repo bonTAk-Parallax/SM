@@ -8,20 +8,30 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.decorators import action
 from rest_framework.generics import DestroyAPIView
+# import django_filters.rest_framework
+from rest_framework import filters
 
+#.order_by('-created_date')
 # Create your views here.
 
 class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Profile.objects.all().order_by('-created_date')
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    # filterset_fields = ['category', 'in_stock']
+    filter_backends = [filters.OrderingFilter]
+    # filter_backends = [filters.SearchFilter]
+    search_fields = ['user__username']
+    ordering_fields = ['user__username', 'created_date']
+    ordering = ['created_date']
 
-    def get_queryset(self):
-        username = self.request.query_params.get('username')
-        if username:
-            temp = Profile.objects.filter(user__username__icontains = username)
-            if temp:
-                return temp
-        return Profile.objects.all()
+    # def get_queryset(self):
+    #     username = self.request.query_params.get('username')
+    #     if username:
+    #         temp = Profile.objects.filter(user__username__icontains = username)
+    #         if temp:
+    #             return temp
+    #     return Profile.objects.all()
 
     @action(detail=True, methods=['post'], permission_classes = [IsAuthenticated])
     def follow(self, request, pk=None):
