@@ -15,6 +15,14 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Profile.objects.all().order_by('-created_date')
     serializer_class = ProfileSerializer
 
+    def get_queryset(self):
+        username = self.request.query_params.get('username')
+        if username:
+            temp = Profile.objects.filter(user__username__icontains = username)
+            if temp:
+                return temp
+        return Profile.objects.all()
+
     @action(detail=True, methods=['post'], permission_classes = [IsAuthenticated])
     def follow(self, request, pk=None):
         target_profile = self.get_object()
