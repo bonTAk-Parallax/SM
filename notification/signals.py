@@ -32,7 +32,7 @@ def post_comment_notification(sender, instance, created, **kwargs):
             triggerer = instance.created_by,
             notif_type = f"{instance.created_by} commented on your post",
             content_type = ContentType.objects.get_for_model(Post),
-            object_id = post.id
+            object_id = post.id,
         )
 
 @receiver(post_save, sender=CommentLike)
@@ -66,7 +66,7 @@ def reply_to_reply_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = parent_reply.created_by,
             triggerer = instance.created_by,
-            notif_type = f"{instance.created_by} replies to your reply",
+            notif_type = f"{instance.created_by} replied to your reply",
             content_type = ContentType.objects.get_for_model(Reply),
             object_id = parent_reply.id
         )

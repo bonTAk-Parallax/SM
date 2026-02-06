@@ -7,6 +7,8 @@ from rest_framework import generics
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync, sync_to_async
 from rest_framework.decorators import api_view
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 User = get_user_model()
 

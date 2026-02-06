@@ -13,8 +13,8 @@ User = get_user_model()
 # notification-system-42053
 # https://console.firebase.google.com/u/0/project/notification-system-42053/overview
 class Notification(models.Model):
-    content_type = models.ForeignKey(ContentType, related_name='content_type_notification', on_delete = models.CASCADE)
-    object_id = models.PositiveBigIntegerField()
+    content_type = models.ForeignKey(ContentType, related_name='content_type_notification', on_delete = models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveBigIntegerField(null=True, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notifications")
     triggerer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_notifications")
