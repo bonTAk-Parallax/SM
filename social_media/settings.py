@@ -59,7 +59,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
             'rest_framework.authentication.SessionAuthentication',
-            # "rest_framework_simplejwt.authentication.JWTAuthentication",
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
         ],
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -89,6 +89,14 @@ CHANNEL_LAYERS = {
     },
 }
 
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
 AUTH_USER_MODEL = "app_users.User"
 
 MIDDLEWARE = [
@@ -96,7 +104,7 @@ MIDDLEWARE = [
     # 'corsheaders.middleware.CorsMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'author.middlewares.AuthorDefaultBackendMiddleware',
@@ -200,6 +208,11 @@ USE_TZ = True
 import os
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  
+]
+STATIC_ROOT = BASE_DIR / "staticfiles" 
 
 MEDIA_URL = "/media/"
 

@@ -7,11 +7,19 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)  
 
 class NotificationConsumer(AsyncWebsocketConsumer):
+    # async def connect(self):
+    #     logger.info("WebSocket connect called")
+    #     self.group_name = f"user_{self.scope['user'].id}"
+    #     await self.channel_layer.group_add(self.group_name, self.channel_name)
+    #     await self.accept()
+
     async def connect(self):
-        logger.info("WebSocket connect called")
-        self.group_name = f"user_{self.scope['user'].id}"
+        user = getattr(self.scope.get("user"), "id", 1)  # default to 1 if missing
+        self.group_name = f"user_{user}"
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
+        print(f"WebSocket connected for user {user}")
+
 
     async def disconnect(self, code):
         await self.channel_layer.group_discard(self.group_name, self.channel_name)

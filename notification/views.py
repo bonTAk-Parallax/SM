@@ -9,6 +9,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from rest_framework.decorators import api_view
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from .tasks import send_notification_task
 
 User = get_user_model()
 
@@ -19,17 +20,17 @@ class NotificationView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         instance = serializer.save()
-        channel_layer = get_channel_layer()
-        group_name = f"user_{instance.receiver.id}"
-        async_to_sync(channel_layer.group_send)(
-            group_name,
-            {
-                "type": "send_notification",
-                "notification": NotificationSerializer(
-                    instance,
-                    context={"request": self.request}).data
-            }
-        ) 
+        send_notification_task.delay(instance.id)
+        # channel_layer = get_channel_layer()
+        # group_name = f"user_{instance.receiver.id}"
+        # print(f"Sending notification to group {group_name}")
+        # async_to_sync(channel_layer.group_send)(
+        #     group_name,
+        #     {
+        #         "type": "send_notification",
+        #         "message": NotificationSerializer(instance).data
+        #     }
+        # ) 
 
     def get_queryset(self):
         read = self.request.query_params.get('read')

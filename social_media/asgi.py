@@ -28,10 +28,10 @@ from notification.routing import websocket_urlpatterns
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
     "websocket": 
-    AllowedHostsOriginValidator(
-        AuthMiddlewareStack(
+    # AllowedHostsOriginValidator(
+    #     AuthMiddlewareStack(
             URLRouter(websocket_urlpatterns)
-        )
-    )
+    #     )
+    # )
 
 })

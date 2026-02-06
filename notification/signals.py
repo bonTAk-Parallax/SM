@@ -97,3 +97,41 @@ def follower_notification(sender, instance, created, **kwargs):
 # user only gets notifications where they are the receiver and only they can edit it's is_read field
 # user search through icontains filter for posts
 # give user only their posts back for their profile
+
+
+
+
+# FOR BACKEND TESTING PURPOSES ONLY SINCE ADMIN CANNOT TRIGGER THE CHANNEL LAYERS IN VIEWS.PY
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .models import Notification
+from post.models import Comment
+from .serializers import NotificationSerializer
+from .tasks import send_notification_task
+
+@receiver(post_save, sender=Comment)
+def create_comment_notification(sender, instance, created, **kwargs):
+    if created:
+        receiver = instance.post.created_by
+        notification = Notification.objects.create(
+            receiver=receiver,
+            triggerer=instance.post.created_by,
+            notif_type="comment",
+            content_object=instance
+        )
+
+        send_notification_task.delay(notification.id)
+
+        # channel_layer = get_channel_layer()
+        # group_name = f"user_{receiver.id}"
+        # async_to_sync(channel_layer.group_send)(
+        #     group_name,
+        #     {
+        #         "type": "send_notification",
+        #         "message": NotificationSerializer(
+        #             notification, context={'request': None}).data
+        #     }
+        # )
+
