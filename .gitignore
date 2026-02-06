@@ -3,6 +3,7 @@ db.sqlite3
 *.sqlite3
 media/
 secrets/
+/staticfiles/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

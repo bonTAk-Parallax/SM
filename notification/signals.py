@@ -94,10 +94,6 @@ def follower_notification(sender, instance, created, **kwargs):
             object_id = instance.to_profile.id
         )
 
-# user only gets notifications where they are the receiver and only they can edit it's is_read field
-# user search through icontains filter for posts
-# give user only their posts back for their profile
-
 
 
 
@@ -123,15 +119,4 @@ def create_comment_notification(sender, instance, created, **kwargs):
         )
 
         send_notification_task.delay(notification.id)
-
-        # channel_layer = get_channel_layer()
-        # group_name = f"user_{receiver.id}"
-        # async_to_sync(channel_layer.group_send)(
-        #     group_name,
-        #     {
-        #         "type": "send_notification",
-        #         "message": NotificationSerializer(
-        #             notification, context={'request': None}).data
-        #     }
-        # )
 

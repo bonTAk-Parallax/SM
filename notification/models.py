@@ -5,7 +5,6 @@ from app_users.models import *
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
-# Create your models here.
 
 User = get_user_model()
 
@@ -22,7 +21,6 @@ class Notification(models.Model):
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-# url, generic foreign key
 
 class WebPushToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="webpush_tokens")

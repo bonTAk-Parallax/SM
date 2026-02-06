@@ -13,6 +13,3 @@ class NotificationSerializer(serializers.HyperlinkedModelSerializer):
         model = Notification
         fields = ['url','receiver', 'notif_type', 'created_at', 'is_read', 'triggerer']
         read_only_fields = ['receiver', 'notif_type', 'created_at', 'triggerer']
-        # extra_kwargs = {
-        #     'url': {'lookup_field': 'post_pk', 'view_name': 'post-detail'},
-        # }
