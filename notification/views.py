@@ -12,10 +12,24 @@ from channels.layers import get_channel_layer
 
 User = get_user_model()
 
+# daphne -p 8000 social_media.asgi:application   
 class NotificationView(generics.ListCreateAPIView):
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        channel_layer = get_channel_layer()
+        group_name = f"user_{instance.receiver.id}"
+        async_to_sync(channel_layer.group_send)(
+            group_name,
+            {
+                "type": "send_notification",
+                "notification": NotificationSerializer(
+                    instance,
+                    context={"request": self.request}).data
+            }
+        ) 
 
     def get_queryset(self):
         read = self.request.query_params.get('read')

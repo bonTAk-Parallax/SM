@@ -1,10 +1,15 @@
 import json
+import logging
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)  
+
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.group_name = f"user_{self.scope["user"].id}"
+        logger.info("WebSocket connect called")
+        self.group_name = f"user_{self.scope['user'].id}"
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
@@ -16,3 +21,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.send(
             text_data = json.dumps({'notification': notification})
         )
+

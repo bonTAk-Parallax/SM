@@ -89,7 +89,7 @@ def follower_notification(sender, instance, created, **kwargs):
         Notification.objects.create(
             receiver = instance.to_profile.user,
             triggerer = instance.from_profile.user,
-            notif_type = f"{instance.created_by} followed you",
+            notif_type = f"{instance.from_profile.user.username} followed you",
             content_type = ContentType.objects.get_for_model(Profile),
             object_id = instance.to_profile.id
         )
