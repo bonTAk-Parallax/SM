@@ -8,8 +8,10 @@ from rest_framework import serializers
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
     receiver = UserOfPost(fields=['username', 'profile_pic'], read_only=True)
     triggerer = UserOfPost(fields=['username', 'profile_pic'], read_only=True)
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+
     
     class Meta:
         model = Notification
-        fields = ['url','receiver', 'notif_type', 'created_at', 'is_read', 'triggerer']
+        fields = ['id', 'url','receiver', 'notif_type', 'created_at', 'is_read', 'triggerer']
         read_only_fields = ['receiver', 'notif_type', 'created_at', 'triggerer']

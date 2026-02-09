@@ -39,17 +39,8 @@ def process_mentions(usernames, triggerer_id):
             triggerer = triggerer,
             notif_type = f"{user.username} mentioned you.",
         )
-        # send_notification_task.delay(notification.id)
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"user_{notification.receiver.id}",
-            {
-                "type": "send_notification",
-                "message": NotificationSerializer(
-                    notification, context={"request": None}
-                ).data
-            }
-        )
+        send_notification_task.delay(notification.id)
+
 
 # mention worked but need to pass the link to the post/comment/reply in it's url 
 # disable being able to mention oneself and also the hardcoded user for testing in consumer

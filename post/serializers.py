@@ -27,6 +27,7 @@ class UserOfPost(UserSerializer, DynamicFieldsModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     created_by = UserOfPost(fields=['username', 'profile_pic'], read_only=True)
     total_likes = serializers.SerializerMethodField(read_only=True)
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 
     class Meta:
         model = Post
@@ -53,6 +54,7 @@ class CommentSerializer(serializers.ModelSerializer):
     post = serializers.IntegerField(source="post.id", read_only=True)
     comment_like_method = serializers.IntegerField(read_only=True)
     modification_history = serializers.JSONField(read_only=True)
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 
     class Meta:
         model = Comment
@@ -71,6 +73,7 @@ class ReplySerializer(serializers.ModelSerializer):
     reply_like_method = serializers.IntegerField(read_only=True)
     parent_reply = serializers.IntegerField(source="parent_reply.id", read_only=True)
     modification_history = serializers.JSONField(read_only=True)
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 
     class Meta:
         model = Reply

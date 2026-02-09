@@ -26,6 +26,7 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     following = FollowingSerializer(many=True, source = "following_relations", read_only=True)
     followers_count = serializers.IntegerField(read_only=True)
     following_count = serializers.IntegerField(read_only=True)
+    created_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
     class Meta:
         model = Profile
         fields = ["url", "id", "user", "caption", "following", "following_count", "followers_count", "created_date"]
