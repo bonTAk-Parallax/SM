@@ -99,12 +99,9 @@ def follower_notification(sender, instance, created, **kwargs):
 
 # FOR BACKEND TESTING PURPOSES ONLY SINCE ADMIN CANNOT TRIGGER THE CHANNEL LAYERS IN VIEWS.PY
 from django.db.models.signals import post_save
-from django.dispatch import receiver
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+
 from .models import Notification
 from post.models import Comment
-from .serializers import NotificationSerializer
 from .tasks import send_notification_task
 
 @receiver(post_save, sender=Comment)

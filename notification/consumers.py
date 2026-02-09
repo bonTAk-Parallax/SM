@@ -5,7 +5,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)  
-
+    
 class NotificationConsumer(AsyncWebsocketConsumer):
     # async def connect(self):
     #     logger.info("WebSocket connect called")
